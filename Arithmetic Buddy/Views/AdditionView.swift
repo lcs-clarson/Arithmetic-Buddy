@@ -1,10 +1,3 @@
-//
-//  AdditionView.swift
-//  ArithmeticBuddy
-//
-//  Created by Russell Gordon on 2024-01-30.
-//
-
 import SwiftUI
 
 struct AdditionView: View {
@@ -12,8 +5,11 @@ struct AdditionView: View {
     // MARK: Stored properties
     
     // The two numbers the user must add
-    @State var firstNumber = Int.random(in: 1...25)
-    @State var secondNumber = Int.random(in: 1...25)
+    @State private var firstNumber = Int.random(in: 1...25)
+    @State private var secondNumber = Int.random(in: 1...25)
+    
+    // User input through TextField
+    @State private var givenInput = ""
     
     // MARK: Computed properties
     
@@ -23,12 +19,12 @@ struct AdditionView: View {
     }
     
     // Feedback to the user
-    @State var feedback = ""
+    @State private var feedback = ""
     
     // The user interface
     var body: some View {
         
-        VStack(spacing: 0) {
+        VStack(spacing: 10) {
             
             Spacer()
             
@@ -52,9 +48,12 @@ struct AdditionView: View {
             
             HStack {
                 Spacer()
-                Rectangle()
-                    .frame(width: 100, height: 50)
-                    .padding()
+                
+                TextField("Enter your answer", text: $givenInput)
+                    .textFieldStyle(.roundedBorder)
+                    .keyboardType(.numberPad)
+                    .frame(width: 150, height: 40)
+                
             }
             
             Spacer()
@@ -95,19 +94,28 @@ struct AdditionView: View {
     // Check whether the user's answer was correct
     // Provide appropriate feedback
     func checkAnswer() {
+        guard let userAnswer = Int(givenInput) else {
+            feedback = "Please enter a valid number."
+            return
+        }
         
+        if userAnswer == correctSum {
+            feedback = "Correct!"
+        } else {
+            feedback = "Incorrect. Try again."
+        }
     }
     
     // Reset for a new question
     func reset() {
-        
         firstNumber = Int.random(in: 1...25)
         secondNumber = Int.random(in: 1...25)
+        givenInput = ""
         feedback = ""
-        
     }
 }
 
 #Preview {
     AdditionView()
 }
+
